@@ -1,0 +1,197 @@
+CONSOLIDATE()
+1.	A[D(numero_nodi)] nuovo array di nodi
+2.	Inizializziamo ogni cella di A a NULL
+3.	For ogni nodo iter della lista delle radici 
+4.	{
+5.	       d = Iter.grado
+6.	           While(A[d] != NULL AND iter!=A[d]) 
+7.	           {
+8.	                Nuovo nodo y=A[d]
+9.	                If(iter.chiave  >  y.chiave ) swap(iter,y)
+10.	                LINK(y,iter)
+11.	                A[d]=NULL
+12.	                d=d+1
+13.	           }
+14.	      A[d]=iter
+15.	}
+16.	min=NULL
+17.	for i=0 to D(numero_nodi)
+18.	{
+19.	      If(A[i]!=NULL) 
+20.	      { 
+21.	           If(min==NULL)
+22.	           { 
+23.	                Creare lista radici che contiene solo A[i]
+24.	                min=A[i]
+25.	           }
+26.	           Else
+27.	           {
+28.	                Inserire A[i] nella lista delle radici
+29.	                If(A[i].chiave < min.chiave ) min=A[i]
+30.	           }
+31.	      }
+32.	}
+33.	   
+
+
+
+ExtractMin()
+1.	If(min==NULL) return NULL //struttura vuota
+2.	Nuovo nodo z=min
+3.	Aggiungere tutti i figli di min nella lista delle radici(ovviamente settando successivamente il padre di questi figli a NULL)
+4.	Rimuovere min dalla lista delle radici
+5.	If(z==z.right) min=NULL   //struttura svuotata
+6.	Else
+7.	{
+8.	    min=z.right
+9.	    CONSOLIDATE()
+10.	}
+11.	numero_nodi=numero_nodi – 1
+12.	return z
+
+
+
+1.	If( H1 == NULL AND H2==NULL) return NULL
+2.	If(H1==NULL) return H2
+3.	If(H2==NULL) return H2
+4.	Allocare nuovo heap H3
+5.	H3=H1
+6.	Concatena lista delle radici di H2 con la lista delle radici di H1
+7.	H3.min=min(H2.min , H1.min)
+8.	H3.numero_nodi=H2.numero_nodi  +  H1.numero_nodi
+9.	Return H3
+
+
+Fib-Heap-Insert(key)
+1.	Sia x un nuovo nodo
+2.	x.chiave=key
+3.	x.figlio=NULL
+4.	x.Mark=false
+5.	If(Min==NULL)
+6.	{
+7.	    Crea lista delle radici in cui c’è solo x
+8.	    Min=x
+9.	}
+10.	Else
+11.	{
+12.	   Inserisce x nella lista delle radici (inserimento in testa)
+13.	   If(x.chiave < Min.chiave) Min=x
+14.	}
+15.	numero_nodi <- numero_nodi + 1
+
+
+LINK(y,x)
+1.	Togliere y dalla lista delle radici
+2.	Inserire y nella lista dei figli di x( x.grado aumenta)
+3.	y.mark=false
+
+
+
+DecreaseKey(vecchiaKey , nuovaKey)   //DK #1
+1.	If(min==NULL) return;  //struttura vuota
+2.	DecreaseKey(testa,vecchiaKey,nuovaKey) //è un’altra funzione
+3.	trovato=false   //lo reimpostiamo a false dato che la seconda  DK lo ha                                          //   cambiato a true
+DecreaseKey(nodo x , vecchiaKey , nuovaKey)/versione leggermente modificata di find
+1.	if(x==NULL) return
+2.	if(trovato==true) return
+3.	x.C=’Y’ 
+4.	nodo p1=NULL
+5.	nodo p2=NULL
+6.	if(x.chiave==vecchiaKey)
+7.	{ 
+8.	     trovato=true
+9.	     p2=x
+10.	     x.C=’N’
+11.	     p1=p2
+12.	     DecreaseKey(p1,nuovaKey)  //è la DK #3
+13.	}
+14.	If(p2==NULL) //chiamate ricorsive
+15.	{ 
+16.	   If(x.figlio!=NULL) DecreaseKey(x.figlio, vecchiaKey , nuovaKey)
+17.	   If(x.right.C != ‘Y’ ) DecreaseKey( x.right , vecchiaKey , nuovaKey)
+18.	}
+19.	x.C=’N’
+
+
+DecreaseKey(nodo x , nuovaKey)
+1.	If( x.chiave > nuovaKey) return
+2.	x.chiave=nuovaKey
+3.	y=x.padre
+4.	If(y!= NULL AND x.chiave  < y.chiave)
+5.	{
+6.	    Taglio(x , y)
+7.	    Taglio_cascata(y)
+8.	}
+9.	If(x.chiave < min.chiave) min=x
+
+Pseudocodice(con find)
+Pisano-Delete(k)
+1.	If(min==NULL) return
+2.	If(min.chiave==k){ extractMin()  return  }
+3.	find(testa,k)
+4.	nodo x = infinite
+5.	if(x==NULL) return
+6.	nodo y=x.padre
+7.	If(y!=NULL)
+8.	{
+9.	    Taglio(y , x)
+10.	     Taglio_cascata(y)
+11.	}
+12.	infinite=NULL
+13.	Aggiungere figli di x alla lista delle radici
+14.	Eliminare x 
+
+Pseudocodice(senza find)
+Pisano-Delete(nodo x)
+1.	If(min==NULL) return
+2.	If(min==x){ extractMin()  return  }
+3.	if(x==NULL) return
+4.	nodo y=x.padre
+5.	If(y!=NULL)
+6.	{
+7.	    Taglio(y , x)
+8.	     Taglio_cascata(y)
+9.	}
+10.	Aggiungere figli di x alla lista delle radici
+11.	Eliminare x 
+
+PrintListaradici()
+1.	if(min==NULL) return
+2.	nodo iter=testa;
+3.	STAMPA: "LISTA RADICI: “ iter.chiave " "
+4.	while(iter.right!=testa)
+5.	{
+6.	             iter=iter->right;
+7.		STAMPA: iter.chiave" ";
+8.	}
+
+
+Print()
+1.	if(min==NULL) return
+2.	nodo iter=testa;
+3.	STAMPA: "  |radice : ";
+4.	preorder(testa);
+5.	for(iter=testa.right ; iter!=testa; iter=iter.right)
+6.	{
+7.		STAMPA:"  |radice : ";
+8.		preorder(iter);
+9.	}
+10.	STAMPA: "numNodi=" numero_nodi
+
+Preorder(nodo x)
+1.	if(x!=NULL)
+2.	{
+3.		STAMPA x.figlio”  grado= " x.gradp" ";
+4.		if(x.figlio!=NULL)
+5.		{
+6.			nodo iter=x.figlio;
+7.			STAMPA: "->[figli di " x.chiave " : "; 
+8.			preorder(iter);
+9.		             for(iter=x.figlio.right;iter!=x.figlio;iter=iter.right)
+10.	                                     preorder(iter);
+11.		             cout<<"] ";
+12.		}
+13.	}
+
+
+    
